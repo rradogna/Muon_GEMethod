@@ -118,29 +118,6 @@ class CMSAnalysis {
       /// Get muon i in current event
       muon_pog::Muon& muon(unsigned int i);
 
-//      /// Get number of electrons in current event
-//      unsigned int nElectrons();
-//      /// Get vector of electrons in current event
-//      std::vector<muon_pog::Electron> electrons();
-//      /// Get pointer to electron i in current event
-//      muon_pog::Electron* pelectron(unsigned int i);
-//      /// Get electron i in current event
-//      muon_pog::Electron& electron(unsigned int i);
-
-//      /// Get number of jets in current event
-//      unsigned int nJets();
-//      /// Get vector of jets in current event
-//      std::vector<muon_pog::Jet> jets();
-//      /// Get pointer to jet i in current event
-//      muon_pog::Jet* pjet(unsigned int i);
-//      /// Get jet i in current event
-//      muon_pog::Jet& jet(unsigned int i);
-
-//      /// True if the current event is a real data event
-//      bool isDataEvent(){return (!event().isMC);};
-//      /// True if the current event is a MC event
-//      bool isMCEvent(){return (event().isMC);};
-
   private:
       double _lumi; ///<
       std::vector<TString> _sampleFile; ///<
@@ -160,24 +137,13 @@ class CMSAnalysis {
       TTree* _tree; ///<
 
       TBranch* _bEvent; ///<
-//      TBranch* _bGenInfo; ///<
-//      TBranch* _bGenParticles; ///<
-//      TBranch* _bMuons; ///<
-//      TBranch* _bElectrons; ///<
-//      TBranch* _bJets; ///<
-//      TBranch* _bHLT; ///<
-//      TBranch* _bMETFilter; ///<
-//      TBranch* _bMET; ///<
 
       Int_t _iEvent; ///<
       muon_pog::Event* _pevent; ///<
       muon_pog::GenInfo* _pgenInfo; ///<
       std::vector<muon_pog::GenParticle>* _pgenParticles; ///<
       std::vector<muon_pog::Muon>* _pmuons; ///<
-//      std::vector<muon_pog::Electron>* _pelectrons; ///<
-//      std::vector<muon_pog::Jet>* _pjets; ///<
       muon_pog::HLT* _phlt; ///<
-//      muon_pog::HLT* _pMETFilter; ///<
       muon_pog::METs* _pmet; ///<
 
       std::vector<TH1D*> hists_1D; ///<

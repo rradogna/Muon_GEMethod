@@ -26,25 +26,10 @@ CMSAnalysis::CMSAnalysis() {
       _dataIndex = -1;
 
       _bEvent = 0;
-//      _bGenInfo = 0;
-//      _bGenParticles = 0;
-//      _bMuons = 0;
-//      _bElectrons = 0;
-//      _bJets = 0;
-//      _bHLT = 0;
-//      _bMETFilter = 0;
-//      _bMET = 0;
 
       _iEvent = -1;
       _pevent = 0;
-//      _pgenInfo = 0;
-//      _pgenParticles = 0;
-//      _pmuons = 0;
-//      _pelectrons = 0;
-//      _pjets = 0;
-//      _phlt = 0;
-//      _pMETFilter = 0;
-//      _pmet = 0;
+
 };
 
 CMSAnalysis::~CMSAnalysis() { 
@@ -502,30 +487,7 @@ void CMSAnalysis::SetTree(int i) {
       if (!_tree) _file->GetObject("MUONPOGTREE/MuonPogTree",_tree);
 
       _bEvent = _tree->GetBranch("event");
-//      _bGenInfo = _tree->GetBranch("genInfos");
-//      _bGenParticles = _tree->GetBranch("genParticles");
-//      _bMuons = _tree->GetBranch("muons");
-//      _bElectrons = _tree->GetBranch("electrons");
-//      _bJets = _tree->GetBranch("jets");
-//      _bHLT = _tree->GetBranch("hlt");
-//      _bMETFilter = _tree->GetBranch("metFilters");
-//      _bMET = _tree->GetBranch("mets");
-
       _bEvent->SetAddress(&_pevent);
-//      if (_bGenInfo) _bGenInfo->SetAddress(&_pgenInfo);
-//      if (_bGenParticles) _bGenParticles->SetAddress(&_pgenParticles);
-//      _bMuons->SetAddress(&_pmuons);
-////      _bElectrons->SetAddress(&_pelectrons);
-//      _bJets->SetAddress(&_pjets);
-//      _bHLT->SetAddress(&_phlt);
-//      _bMETFilter->SetAddress(&_pMETFilter);
-//      _bMET->SetAddress(&_pmet);
-
-//      printf("Tree: %p, bSummary: %p, bEvent: %p\n", (void*)_tree, (void*)_bSummary, (void*)_bEvent);
-    //////////////// NEW //////////////////
-//    _pmuons = _pevent->muons
-    //////////////// NEW //////////////////
-
 
       int nentriesInTree = _tree->GetEntriesFast();
       printf("\tReading %d entries from a total of %d\n", _sampleNevents[i], nentriesInTree);
@@ -538,15 +500,6 @@ Int_t CMSAnalysis::GetEntry(int iEvent) {
 
       _iEvent = iEvent;
       if (_pevent) delete _pevent; _pevent = 0;
-//      if (_pgenInfo) delete _pgenInfo; _pgenInfo = 0;
-//      if (_pgenParticles) delete _pgenParticles; _pgenParticles = 0;
-//      if (_pmuons) delete _pmuons; _pmuons = 0;
-////      if (_pelectrons) delete _pelectrons; _pelectrons = 0;
-//      if (_pjets) delete _pjets; _pjets = 0;
-//      if (_phlt) delete _phlt; _phlt = 0;
-//      if (_pMETFilter) delete _pMETFilter; _pMETFilter = 0;
-//      if (_pmet) delete _pmet; _pmet = 0;
-
       return 0;
 }
 
@@ -569,7 +522,6 @@ muon_pog::Event& CMSAnalysis::event(){return *pevent();};
 // HLT
 muon_pog::HLT* CMSAnalysis::phlt() {
      if (_pevent==0) _bEvent->GetEntry(_iEvent);
-//      if (_phlt==0) _bHLT->GetEntry(_iEvent);
       return (&(_pevent->hlt));
 }
 muon_pog::HLT& CMSAnalysis::hlt(){return *phlt();};
@@ -585,7 +537,6 @@ muon_pog::HLT& CMSAnalysis::hlt(){return *phlt();};
 // MET
 muon_pog::METs* CMSAnalysis::pmet() {
     if (_pevent==0) _bEvent->GetEntry(_iEvent);
-//      if (_pmet==0) _bMET->GetEntry(_iEvent);
       return (&(_pevent->mets));
 }
 muon_pog::METs& CMSAnalysis::met(){return *pmet();};
@@ -614,63 +565,19 @@ muon_pog::METs& CMSAnalysis::met(){return *pmet();};
 // MUONS
 unsigned int CMSAnalysis::nMuons() {
       if (_pevent==0) _bEvent->GetEntry(_iEvent);
-//      if (_pmuons==0 && _bMuons) _bMuons->GetEntry(_iEvent);
-//    printf("Muons %i \n", _pevent->muons.size() );
     return _pevent->muons.size();
 //      return 1; ///NEW
 }
 std::vector<muon_pog::Muon> CMSAnalysis::muons() {
     if (_pevent==0) _bEvent->GetEntry(_iEvent);
-//      if (_pmuons==0) _bMuons->GetEntry(_iEvent);
-//      return (*_pmuons);
     return (_pevent->muons);
 }
 muon_pog::Muon* CMSAnalysis::pmuon(unsigned int i) {
       if (nMuons()>i) {
           if (_pevent==0) _bEvent->GetEntry(_iEvent);
-//            if (_pmuons==0) _bMuons->GetEntry(_iEvent);
-//            return &(_pmuons->at(i));
             return &(_pevent->muons.at(i));
       } else {
             return 0;
       }
 }
 muon_pog::Muon& CMSAnalysis::muon(unsigned int i){return *pmuon(i);};
-
-//// ELECTRONS
-//unsigned int CMSAnalysis::nElectrons() {
-//      if (_pevent==0) _bEvent->GetEntry(_iEvent); 
-//      return _pevent->nElectrons;
-//}
-//std::vector<muon_pog::Electron> CMSAnalysis::electrons() {
-//      if (_pelectrons==0) _bElectrons->GetEntry(_iEvent); 
-//      return (*_pelectrons);
-//}
-//muon_pog::Electron* CMSAnalysis::pelectron(unsigned int i) {
-//      if (nElectrons()>i) {
-//            if (_pelectrons==0) _bElectrons->GetEntry(_iEvent); 
-//            return &(_pelectrons->at(i)); 
-//      } else {
-//            return 0;
-//      }
-//}
-//muon_pog::Electron& CMSAnalysis::electron(unsigned int i){return *pelectron(i);};
-//
-//// JETS
-//unsigned int CMSAnalysis::nJets() {
-//      if (_pevent==0) _bEvent->GetEntry(_iEvent); 
-//      return _pevent->nJets;
-//}
-//std::vector<muon_pog::Jet> CMSAnalysis::jets() {
-//      if (_pjets==0) _bJets->GetEntry(_iEvent); 
-//      return (*_pjets);
-//}
-//muon_pog::Jet* CMSAnalysis::pjet(unsigned int i) {
-//      if (nJets()>i) {
-//            if (_pjets==0) _bJets->GetEntry(_iEvent); 
-//            return &(_pjets->at(i)); 
-//      } else {
-//            return 0;
-//      }
-//}
-//muon_pog::Jet& CMSAnalysis::jet(unsigned int i){return *pjet(i);};
