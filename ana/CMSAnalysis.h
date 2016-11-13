@@ -80,10 +80,12 @@ class CMSAnalysis {
       /// Get global information in current event
       muon_pog::Event& event();
 
-      /// Get pointer to GenInfo information in current event
-      muon_pog::GenInfo* pgenInfo();
-      /// Get GenInfo information in current event
-      muon_pog::GenInfo& genInfo();
+      /// Get vector of GenInfo in current event
+      std::vector<muon_pog::GenInfo> genInfos();
+      /// Get pointer to GenInfo i in current event
+      muon_pog::GenInfo* pgenInfo(unsigned int i);
+      /// Get GenInfo i in current event
+      muon_pog::GenInfo& genInfo(unsigned int i);
 
       /// Get pointer to HLT information in current event
       muon_pog::HLT* phlt();

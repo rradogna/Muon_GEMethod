@@ -386,14 +386,19 @@ int main(int argc, char** argv){
       // Fill histograms
       double weight = 1.;
       // This is needed only for aMC@NLO
-//      if (!cms.isDataFile() && cms.genInfo().PDFweight < 0) {
-//	weight = -1*weight;
-//      }//TO BE FIXED
+      if (!cms.isDataFile()){
+        for (unsigned int igi=0; igi<cms.genInfos().size(); ++igi) {
+            printf("cms.genInfo(igi).genWeight %d\n", cms.genInfo(igi).genWeight);
+            if (cms.genInfo(igi).genWeight < 0) {
+                weight = -1*weight;
+            }
+        }
+      }//TO BE CHECKED WITH aMC@NLO
       
       //SF for Id
       // 2 good muons, with the right Z mass                                            
       std::vector<muon_pog::Muon*> goodMuons = cms.GoodZprimeMuons();
-        printf("data good Zprime\n");
+        printf("good Zprime\n");
 
       if (goodMuons.size()!=2) continue;
       muon_pog::Muon* mu1 = goodMuons[0];

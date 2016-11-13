@@ -511,13 +511,18 @@ muon_pog::Event* CMSAnalysis::pevent() {
 muon_pog::Event& CMSAnalysis::event(){return *pevent();};
 
 //// GENINFO
-//muon_pog::GenInfo* CMSAnalysis::pgenInfo() {
-//      if (_pevent==0) _bEvent->GetEntry(_iEvent); 
-//      if (!(_pevent->isMC)) return 0;
-//      if (_pgenInfo==0 && _bGenInfo) _bGenInfo->GetEntry(_iEvent); 
-//      return (_pgenInfo);
-//}
-//muon_pog::GenInfo& CMSAnalysis::genInfo(){return *pgenInfo();};
+std::vector<muon_pog::GenInfo> CMSAnalysis::genInfos() {
+    if (_pevent==0) _bEvent->GetEntry(_iEvent);
+    //      if (!(_pevent->isMC)) return 0;
+    if (_pevent->genInfos.size())
+        return (_pevent->genInfos);
+}
+muon_pog::GenInfo* CMSAnalysis::pgenInfo(unsigned int i) {
+    if (_pevent==0) _bEvent->GetEntry(_iEvent);
+    if (!(_pevent->genInfos.size())) return 0;
+    return (&(_pevent->genInfos.at(i)));
+}
+muon_pog::GenInfo& CMSAnalysis::genInfo(unsigned int i){return *pgenInfo(i);};
 
 // HLT
 muon_pog::HLT* CMSAnalysis::phlt() {
@@ -525,14 +530,6 @@ muon_pog::HLT* CMSAnalysis::phlt() {
       return (&(_pevent->hlt));
 }
 muon_pog::HLT& CMSAnalysis::hlt(){return *phlt();};
-
-//// METFilter
-//muon_pog::HLT* CMSAnalysis::pMETFilter() {
-//    if (_pevent==0) _bEvent->GetEntry(_iEvent);
-////      if (_pMETFilter==0) _bMETFilter->GetEntry(_iEvent);
-//      return (&(_pevent->metFilters));
-//}
-//muon_pog::HLT& CMSAnalysis::METFilter(){return *pMETFilter();};
 
 // MET
 muon_pog::METs* CMSAnalysis::pmet() {
