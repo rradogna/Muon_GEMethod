@@ -100,7 +100,7 @@ int main(int argc, char** argv){
 //    cms.AddDataSample("Data",  "/afs/cern.ch/work/r/rradogna/Scale/CMSSW_8_0_8/src/GeneralizedEndpoint_80/ntuples/skim_mumu_50_15_CMSTrees_SingleMuon_2016_Prompt_v2_MINIAOD.root", lumi_invpb);
       //cms.AddDataSample("Data",  "root://cms-xrd-global.cern.ch///store/group/phys_muon/Commissioning/Ntuples/Commissioning2016/data25ns/skimmed/output_data10June/muonPOGNtuple_SingleMu2016B-v2-Golden-10-June_skimmed_2_muons_20_GeV_nohits_and_matches_no_HLT_2.root", lumi_invpb);
       printf("reading data");
-      cms.AddDataSample("Data",  "/afs/cern.ch/work/r/rradogna/Scale/ScalePOG/CMSSW_8_0_8/src/ntuples/muonPOGNtuple_8_0_8_ZToMuMu_powheg_M_1400_2300_13.root", lumi_invpb);
+      cms.AddDataSample("Data",  "/afs/cern.ch/work/r/rradogna/Scale/ScalePOG/CMSSW_8_0_20/src/Muon_GEMethod/ntuples/muonPOGNtuple_8_0_8_ZToMuMu_powheg_M_1400_2300_13.root", lumi_invpb);
   }
 
   TString chtit_data = TString::Format("2016 Data, L=%d fb^{-1}", int(lumi_invpb/1.e3+0.5));
@@ -162,7 +162,7 @@ int main(int argc, char** argv){
   double zz_in_total = 989312;//25ns
 
 //  TString dir = "/afs/cern.ch/work/r/rradogna/Scale/CMSSW_8_0_8/src/GeneralizedEndpoint_80/ntuples/";//25ns
-  TString dir = "/afs/cern.ch/work/r/rradogna/Scale/CMSSW_8_0_8/src/GeneralizedEndpoint_80/ntuples/SKIM_Zprime/";//25ns
+  TString dir = "/afs/cern.ch/work/r/rradogna/Scale/CMSSW_8_0_20/src/GeneralizedEndpoint_80/ntuples/SKIM_Zprime/";//25ns
   TString SkimSuffix = "_ZPRIME_dimuon_skimmed"; // 25ns
 
 ///cms.AddMCSample("SM_Z", dir+"/test/ZToMuMu_NNPDF30_13TeV-powheg_M_50_120"+SkimSuffix+"_WPRIME_skimmed_PtZ_0_250.root", z_50_120_in_powheg_total, z_50_120_powheg_xsec, z_50_120_in_powheg_total, prescale);
@@ -188,7 +188,7 @@ int main(int argc, char** argv){
 //  cms.AddMCSample("VV", dir+"CMSTrees_ZZ_TuneCUETP8M1_13TeV-pythia8_80X_asymptotic_MINIAODv2"+SkimSuffix+".root", zz_in_total, zz_xsec, zz_in_total, prescale);
 
 //  cms.AddMCSample("VV", "root://cms-xrd-global.cern.ch///store/caf/user/oglez/NTUPLES/80X_CMSTrees_2016_06_20/CMSTrees_ZZ_TuneCUETP8M1_13TeV-pythia8_80X_asymptotic_MINIAODv2.root", zz_in_total, zz_xsec, zz_in_total, prescale);
-  cms.AddMCSample("SM_Z", "/afs/cern.ch/work/r/rradogna/Scale/ScalePOG/CMSSW_8_0_8/src/ntuples/muonPOGNtuple_8_0_8_ZToMuMu_powheg_M_1400_2300_13.root", 1000, z_1400_2300_powheg_xsec, 1000, prescale);
+  cms.AddMCSample("SM_Z", "/afs/cern.ch/work/r/rradogna/Scale/ScalePOG/CMSSW_8_0_20/src/Muon_GEMethod/ntuples/muonPOGNtuple_8_0_8_ZToMuMu_powheg_M_1400_2300_13.root", 1000, z_1400_2300_powheg_xsec, 1000, prescale);
 
 
   unsigned int REBIN = 1; // Use REBIN>1 to get less bins in most histograms
@@ -411,17 +411,17 @@ int main(int argc, char** argv){
     weight = weight *0.95;
           // FIX ME.... check the SF for new data and re-reco
 	// weight = weight *0.987*0.987;
-	// if (fabs(mu2->pt) < 52.) weight = weight *0.97;
+	// if (fabs(mu2->fitPt(TUNEP)) < 52.) weight = weight *0.97;
       }
-      double zMass2 = sqrt(2*mu1->pt_tuneP*mu2->pt_tuneP*(cosh(mu1->eta-mu2->eta)- cos(cms.deltaPhi(mu1->phi,mu2->phi))));
+      double zMass2 = sqrt(2*mu1->fitPt(TUNEP)*mu2->fitPt(TUNEP)*(cosh(mu1->fitEta(TUNEP)-mu2->fitEta(TUNEP))- cos(cms.deltaPhi(mu1->fitPhi(TUNEP),mu2->fitPhi(TUNEP)))));
 
       //Double check Invariant mass
-      double px_mu1 = mu1->pt_tuneP*cos(mu1->phi);
-      double py_mu1 = mu1->pt_tuneP*sin(mu1->phi);
-      double pz_mu1 = mu1->pt_tuneP*sinh(mu1->eta);
-      double px_mu2 = mu2->pt_tuneP*cos(mu2->phi);
-      double py_mu2 = mu2->pt_tuneP*sin(mu2->phi);
-      double pz_mu2 = mu2->pt_tuneP*sinh(mu2->eta);
+      double px_mu1 = mu1->fitPt(TUNEP)*cos(mu1->fitPhi(TUNEP));
+      double py_mu1 = mu1->fitPt(TUNEP)*sin(mu1->fitPhi(TUNEP));
+      double pz_mu1 = mu1->fitPt(TUNEP)*sinh(mu1->fitEta(TUNEP));
+      double px_mu2 = mu2->fitPt(TUNEP)*cos(mu2->fitPhi(TUNEP));
+      double py_mu2 = mu2->fitPt(TUNEP)*sin(mu2->fitPhi(TUNEP));
+      double pz_mu2 = mu2->fitPt(TUNEP)*sinh(mu2->fitEta(TUNEP));
       double px_Z= px_mu1+px_mu2;
       double py_Z= py_mu1+py_mu2;
       double pz_Z= pz_mu1+pz_mu2;
@@ -431,89 +431,89 @@ int main(int argc, char** argv){
       ///////
 
       const Event& ev = cms.event();
-      if (zMass2 > 800 && cms.isDataFile()) printf("zMass2 %f, InvMass %f , ratio %f, mu1pt %f, mu2pt %f EVENT: %i:%i:%i \n", zMass2, InvMass, InvMass/zMass2, mu1->pt_tuneP, mu2->pt_tuneP, ev.runNumber, ev.luminosityBlockNumber, ev.eventNumber);
+      if (zMass2 > 800 && cms.isDataFile()) printf("zMass2 %f, InvMass %f , ratio %f, mu1pt %f, mu2pt %f EVENT: %i:%i:%i \n", zMass2, InvMass, InvMass/zMass2, mu1->fitPt(TUNEP), mu2->fitPt(TUNEP), ev.runNumber, ev.luminosityBlockNumber, ev.eventNumber);
 
 
       double pZ =  sqrt(px_Z*px_Z+py_Z*py_Z+pz_Z*pz_Z);
       double pt_Z = sqrt(px_Z*px_Z+py_Z*py_Z);
-      if ((fabs(mu1->pt_tuneP) > 200 || fabs(mu2->pt_tuneP) > 200 ) && fabs(mu1->pt_tuneP) > 53 && fabs(mu2->pt_tuneP) > 25 && cms.isDataFile() == true) fprintf(Monitor_file,"%i:%i:%i, %f %f %f ::: pZ= %f and ptZ %f, Delta Phi %f, Delta Eta %f \n",  ev.runNumber,  ev.luminosityBlockNumber, ev.eventNumber, zMass2, mu1->pt_tuneP, mu2->pt_tuneP, pZ, pt_Z, cms.deltaPhi(mu1->phi,mu2->phi), mu1->eta-mu2->eta);
+      if ((fabs(mu1->fitPt(TUNEP)) > 200 || fabs(mu2->fitPt(TUNEP)) > 200 ) && fabs(mu1->fitPt(TUNEP)) > 53 && fabs(mu2->fitPt(TUNEP)) > 25 && cms.isDataFile() == true) fprintf(Monitor_file,"%i:%i:%i, %f %f %f ::: pZ= %f and ptZ %f, Delta Phi %f, Delta Eta %f \n",  ev.runNumber,  ev.luminosityBlockNumber, ev.eventNumber, zMass2, mu1->fitPt(TUNEP), mu2->fitPt(TUNEP), pZ, pt_Z, cms.deltaPhi(mu1->fitPhi(TUNEP),mu2->fitPhi(TUNEP)), mu1->fitEta(TUNEP)-mu2->fitEta(TUNEP));
       
 
       if (mode=="Validation"){
 	//printf("weight %f \n", weight);
-	cms.FillPlot1D("hPtmuPeak_mu1", iSample, fabs(mu1->pt), weight);
-	cms.FillPlot1D("hPtmuTail", iSample, fabs(mu1->pt), weight);
-	cms.FillPlot1D("hPhimu", iSample, mu1->phi, weight);
-	cms.FillPlot1D("hEtamu", iSample, mu1->eta, weight);
+	cms.FillPlot1D("hPtmuPeak_mu1", iSample, fabs(mu1->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hPtmuTail", iSample, fabs(mu1->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hPhimu", iSample, mu1->fitPhi(TUNEP), weight);
+	cms.FillPlot1D("hEtamu", iSample, mu1->fitEta(TUNEP), weight);
 	cms.FillPlot1D("hDxymu", iSample, mu1->dxy, weight);
 	cms.FillPlot1D("hDzmu", iSample, mu1->dz, weight);
 	cms.FillPlot1D("hTrkIso", iSample, mu1->trackerIso, weight);
-	cms.FillPlot1D("hTrkIsoOverPt", iSample, mu1->trackerIso/mu1->pt, weight);
+	cms.FillPlot1D("hTrkIsoOverPt", iSample, mu1->trackerIso/mu1->fitPt(TUNEP), weight);
 	
-	cms.FillPlot1D("hPtmuPeak_mu2", iSample, fabs(mu2->pt), weight);
-	cms.FillPlot1D("hPtmuTail", iSample, fabs(mu2->pt), weight);
-	cms.FillPlot1D("hPhimu", iSample, mu2->phi, weight);
-	cms.FillPlot1D("hEtamu", iSample, mu2->eta, weight);
+	cms.FillPlot1D("hPtmuPeak_mu2", iSample, fabs(mu2->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hPtmuTail", iSample, fabs(mu2->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hPhimu", iSample, mu2->fitPhi(TUNEP), weight);
+	cms.FillPlot1D("hEtamu", iSample, mu2->fitEta(TUNEP), weight);
 	cms.FillPlot1D("hDxymu", iSample, mu2->dxy, weight);
 	cms.FillPlot1D("hDzmu", iSample, mu2->dz, weight);
 	cms.FillPlot1D("hTrkIso", iSample, mu2->trackerIso, weight);
-	cms.FillPlot1D("hTrkIsoOverPt", iSample, mu2->trackerIso/mu2->pt, weight);
+	cms.FillPlot1D("hTrkIsoOverPt", iSample, mu2->trackerIso/mu2->fitPt(TUNEP), weight);
 	
-	cms.FillPlot1D("hKMuon", iSample, (1000*mu1->charge)/fabs(mu1->pt), weight);
-	cms.FillPlot1D("hKMuon", iSample, (1000*mu2->charge)/fabs(mu2->pt), weight);
-	cms.FillPlot1D("hKMuonLowMass", iSample, (1000*mu1->charge)/fabs(mu1->pt), weight);
-	cms.FillPlot1D("hKMuonLowMass", iSample, (1000*mu2->charge)/fabs(mu2->pt), weight);
-	cms.FillPlot1D("hKMuonPeak", iSample, (1000*mu1->charge)/fabs(mu1->pt), weight);
-	cms.FillPlot1D("hKMuonPeak", iSample, (1000*mu2->charge)/fabs(mu2->pt), weight);
+	cms.FillPlot1D("hKMuon", iSample, (1000*mu1->fitCharge(TUNEP))/fabs(mu1->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hKMuon", iSample, (1000*mu2->fitCharge(TUNEP))/fabs(mu2->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hKMuonLowMass", iSample, (1000*mu1->fitCharge(TUNEP))/fabs(mu1->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hKMuonLowMass", iSample, (1000*mu2->fitCharge(TUNEP))/fabs(mu2->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hKMuonPeak", iSample, (1000*mu1->fitCharge(TUNEP))/fabs(mu1->fitPt(TUNEP)), weight);
+	cms.FillPlot1D("hKMuonPeak", iSample, (1000*mu2->fitCharge(TUNEP))/fabs(mu2->fitPt(TUNEP)), weight);
 
-	if (mu1->charge ==1){
-	  cms.FillPlot1D("hPtmu_P", iSample, fabs(mu1->pt), weight);
-      if (fabs(mu1->eta) < 1.2 )  cms.FillPlot1D("hKMuonLowMassBarrel", iSample, (1000*mu1->charge)/fabs(mu1->pt), weight);
-	  if (fabs(mu1->eta) < 1.2 ) cms.FillPlot1D("hPtmu_PBarrel", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 1.2 ) cms.FillPlot1D("hPtmu_PEndcap", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 2.1 ) cms.FillPlot1D("hPtmu_PVeryEndcap", iSample, mu1->pt, weight);
-	  cms.FillPlot1D("hPtmu_PLargeTail", iSample, fabs(mu1->pt), weight);
-	  if (fabs(mu1->eta) < 1.2 ) cms.FillPlot1D("hPtmu_PLargeTailBarrel", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 1.2 && fabs(mu1->eta) < 2.0) cms.FillPlot1D("hPtmu_PLargeTailEndcap", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 2.1 ) cms.FillPlot1D("hPtmu_PLargeTailForward", iSample, mu1->pt, weight);
-	  cms.FillPlot1D("hPhimu_P", iSample, mu1->phi, weight);
-	  cms.FillPlot1D("hEtamu_P", iSample, mu1->eta, weight);
-	  cms.FillPlot1D("hPtmu_N", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) < 1.2 ) cms.FillPlot1D("hPtmu_NBarrel", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 1.2 ) cms.FillPlot1D("hPtmu_NEndcap", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 2.1 ) cms.FillPlot1D("hPtmu_NVeryEndcap", iSample, mu2->pt, weight);
-	  cms.FillPlot1D("hPtmu_NLargeTail", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) < 1.2 ) cms.FillPlot1D("hPtmu_NLargeTailBarrel", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 1.2 && fabs(mu2->eta) < 2.1) cms.FillPlot1D("hPtmu_NLargeTailEndcap", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 2.1 ) cms.FillPlot1D("hPtmu_NLargeTailForward", iSample, mu2->pt, weight);
-	  cms.FillPlot1D("hPhimu_N", iSample, mu2->phi, weight);
-	  cms.FillPlot1D("hEtamu_N", iSample, mu2->eta, weight);
+	if (mu1->fitCharge(TUNEP) ==1){
+	  cms.FillPlot1D("hPtmu_P", iSample, fabs(mu1->fitPt(TUNEP)), weight);
+      if (fabs(mu1->fitEta(TUNEP)) < 1.2 )  cms.FillPlot1D("hKMuonLowMassBarrel", iSample, (1000*mu1->fitCharge(TUNEP))/fabs(mu1->fitPt(TUNEP)), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_PBarrel", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 1.2 ) cms.FillPlot1D("hPtmu_PEndcap", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_PVeryEndcap", iSample, mu1->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPtmu_PLargeTail", iSample, fabs(mu1->fitPt(TUNEP)), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_PLargeTailBarrel", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 1.2 && fabs(mu1->fitEta(TUNEP)) < 2.0) cms.FillPlot1D("hPtmu_PLargeTailEndcap", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_PLargeTailForward", iSample, mu1->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPhimu_P", iSample, mu1->fitPhi(TUNEP), weight);
+	  cms.FillPlot1D("hEtamu_P", iSample, mu1->fitEta(TUNEP), weight);
+	  cms.FillPlot1D("hPtmu_N", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_NBarrel", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 1.2 ) cms.FillPlot1D("hPtmu_NEndcap", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_NVeryEndcap", iSample, mu2->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPtmu_NLargeTail", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_NLargeTailBarrel", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 1.2 && fabs(mu2->fitEta(TUNEP)) < 2.1) cms.FillPlot1D("hPtmu_NLargeTailEndcap", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_NLargeTailForward", iSample, mu2->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPhimu_N", iSample, mu2->fitPhi(TUNEP), weight);
+	  cms.FillPlot1D("hEtamu_N", iSample, mu2->fitEta(TUNEP), weight);
 	}else{
-	  cms.FillPlot1D("hPtmu_P", iSample, fabs(mu2->pt), weight);
-      if (fabs(mu2->eta) < 1.2 )  cms.FillPlot1D("hKMuonLowMassBarrel", iSample, (1000*mu2->charge)/fabs(mu2->pt), weight);
-	  if (fabs(mu2->eta) < 1.2 ) cms.FillPlot1D("hPtmu_PBarrel", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 1.2 ) cms.FillPlot1D("hPtmu_PEndcap", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 2.1 ) cms.FillPlot1D("hPtmu_PVeryEndcap", iSample, mu2->pt, weight);
-	  cms.FillPlot1D("hPtmu_PLargeTail", iSample, fabs(mu2->pt), weight);
-	  if (fabs(mu2->eta) < 1.2 ) cms.FillPlot1D("hPtmu_PLargeTailBarrel", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 1.2 && fabs(mu2->eta) < 2.1) cms.FillPlot1D("hPtmu_PLargeTailEndcap", iSample, mu2->pt, weight);
-	  if (fabs(mu2->eta) > 2.1 ) cms.FillPlot1D("hPtmu_PLargeTailForward", iSample, mu2->pt, weight);
-	  cms.FillPlot1D("hPhimu_P", iSample, mu2->phi, weight);
-	  cms.FillPlot1D("hEtamu_P", iSample, mu2->eta, weight);
-	  cms.FillPlot1D("hPtmu_N", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) < 1.2 ) cms.FillPlot1D("hPtmu_NBarrel", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 1.2 ) cms.FillPlot1D("hPtmu_NEndcap", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 2.1 ) cms.FillPlot1D("hPtmu_NVeryEndcap", iSample, mu1->pt, weight);
-	  cms.FillPlot1D("hPtmu_NLargeTail", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) < 1.2 ) cms.FillPlot1D("hPtmu_NLargeTailBarrel", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 1.2 && fabs(mu1->eta) < 2.0) cms.FillPlot1D("hPtmu_NLargeTailEndcap", iSample, mu1->pt, weight);
-	  if (fabs(mu1->eta) > 2.1 ) cms.FillPlot1D("hPtmu_NLargeTailForward", iSample, mu1->pt, weight);
-	  cms.FillPlot1D("hPhimu_N", iSample, mu1->phi, weight);
-	  cms.FillPlot1D("hEtamu_N", iSample, mu1->eta, weight);	
+	  cms.FillPlot1D("hPtmu_P", iSample, fabs(mu2->fitPt(TUNEP)), weight);
+      if (fabs(mu2->fitEta(TUNEP)) < 1.2 )  cms.FillPlot1D("hKMuonLowMassBarrel", iSample, (1000*mu2->fitCharge(TUNEP))/fabs(mu2->fitPt(TUNEP)), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_PBarrel", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 1.2 ) cms.FillPlot1D("hPtmu_PEndcap", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_PVeryEndcap", iSample, mu2->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPtmu_PLargeTail", iSample, fabs(mu2->fitPt(TUNEP)), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_PLargeTailBarrel", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 1.2 && fabs(mu2->fitEta(TUNEP)) < 2.1) cms.FillPlot1D("hPtmu_PLargeTailEndcap", iSample, mu2->fitPt(TUNEP), weight);
+	  if (fabs(mu2->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_PLargeTailForward", iSample, mu2->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPhimu_P", iSample, mu2->fitPhi(TUNEP), weight);
+	  cms.FillPlot1D("hEtamu_P", iSample, mu2->fitEta(TUNEP), weight);
+	  cms.FillPlot1D("hPtmu_N", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_NBarrel", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 1.2 ) cms.FillPlot1D("hPtmu_NEndcap", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_NVeryEndcap", iSample, mu1->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPtmu_NLargeTail", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) < 1.2 ) cms.FillPlot1D("hPtmu_NLargeTailBarrel", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 1.2 && fabs(mu1->fitEta(TUNEP)) < 2.0) cms.FillPlot1D("hPtmu_NLargeTailEndcap", iSample, mu1->fitPt(TUNEP), weight);
+	  if (fabs(mu1->fitEta(TUNEP)) > 2.1 ) cms.FillPlot1D("hPtmu_NLargeTailForward", iSample, mu1->fitPt(TUNEP), weight);
+	  cms.FillPlot1D("hPhimu_N", iSample, mu1->fitPhi(TUNEP), weight);
+	  cms.FillPlot1D("hEtamu_N", iSample, mu1->fitEta(TUNEP), weight);
 	}
 	cms.FillPlot1D("hInvMassPeak", iSample, zMass2, weight);	
-	if (fabs(mu1->eta) > 1.2 || fabs(mu2->eta) > 1.2) cms.FillPlot1D("hInvMassPeakEndcap", iSample, zMass2, weight);	
-	if (fabs(mu1->eta) > 2.1 || fabs(mu2->eta) > 2.1) cms.FillPlot1D("hInvMassPeakVeryEndcap", iSample, zMass2, weight);	
+	if (fabs(mu1->fitEta(TUNEP)) > 1.2 || fabs(mu2->fitEta(TUNEP)) > 1.2) cms.FillPlot1D("hInvMassPeakEndcap", iSample, zMass2, weight);
+	if (fabs(mu1->fitEta(TUNEP)) > 2.1 || fabs(mu2->fitEta(TUNEP)) > 2.1) cms.FillPlot1D("hInvMassPeakVeryEndcap", iSample, zMass2, weight);
 	cms.FillPlot1D("hInvMassTail", iSample, zMass2, weight);	
 	cms.FillPlot1D("hInvMassTailv2", iSample, InvMass, weight);	
 	cms.FillPlot1D("hInvMassLargeTail", iSample, zMass2, weight);	
@@ -529,34 +529,34 @@ int main(int argc, char** argv){
 	//   kappa_mu1 = kappa_mu1 + GoodBias;
 	//   kappa_mu2 = kappa_mu2 + GoodBias;
 	// }	    
-	// float kappa_mu1_refit = 1./(mu1->ptPICKY/1000.); //InTeV 
+	// float kappa_mu1_refit = 1./(mu1->ptPICKY/1000.); //InTeV
 	// float kappa_mu2_refit = 1./(mu2->ptPICKY/1000.); //InTeV
-	float kappa_mu1_refit = mu1->charge/(mu1->pt_tuneP/1000.); //InTeV and TuneP
-	float kappa_mu2_refit = mu2->charge/(mu2->pt_tuneP/1000.); //InTeV
+	float kappa_mu1_refit = mu1->fitCharge(TUNEP)/(mu1->fitPt(TUNEP)/1000.); //InTeV and TuneP
+	float kappa_mu2_refit = mu2->fitCharge(TUNEP)/(mu2->fitPt(TUNEP)/1000.); //InTeV
 	
 	if (assignment == "INNER"){
-	  kappa_mu1_refit = 1./(mu1->pt_tracker/1000.); //InTeV
-	  kappa_mu2_refit = 1./(mu2->pt_tracker/1000.); //InTeV
+	  kappa_mu1_refit = 1./(mu1->fitPt(INNER)/1000.); //InTeV
+	  kappa_mu2_refit = 1./(mu2->fitPt(INNER)/1000.); //InTeV
 	}
-//	if (assignment == "TPFMS"){
-//	  kappa_mu1_refit = 1./(mu1->ptTPFMS/1000.); //InTeV
-//	  kappa_mu2_refit = 1./(mu2->ptTPFMS/1000.); //InTeV
-//	}/// NEW
+	if (assignment == "TPFMS"){
+	  kappa_mu1_refit = 1./(mu1->fitPt(TPFMS)/1000.); //InTeV
+	  kappa_mu2_refit = 1./(mu2->fitPt(TPFMS)/1000.); //InTeV
+	}/// NEW
 	if (assignment == "GLOBAL"){
-	  kappa_mu1_refit = 1./(mu1->pt_global/1000.); //InTeV
-	  kappa_mu2_refit = 1./(mu2->pt_global/1000.); //InTeV
+	  kappa_mu1_refit = 1./(mu1->fitPt(GLB)/1000.); //InTeV
+	  kappa_mu2_refit = 1./(mu2->fitPt(GLB)/1000.); //InTeV
 	}
-//	if (assignment == "DYT"){
-//	  kappa_mu1_refit = 1./(mu1->ptDYT/1000.); //InTeV
-//	  kappa_mu2_refit = 1./(mu2->ptDYT/1000.); //InTeV
-//	}
-//	if (assignment == "PICKY" || assignment == "PICKY_HIGHPT"){
-//	  kappa_mu1_refit = 1./(mu1->ptPICKY/1000.); //InTeV
-//	  kappa_mu2_refit = 1./(mu2->ptPICKY/1000.); //InTeV	      
-//	}/// NEW
+	if (assignment == "DYT"){
+	  kappa_mu1_refit = 1./(mu1->fitPt(DYT)/1000.); //InTeV
+	  kappa_mu2_refit = 1./(mu2->fitPt(DYT)/1000.); //InTeV
+	}
+	if (assignment == "PICKY" || assignment == "PICKY_HIGHPT"){
+	  kappa_mu1_refit = 1./(mu1->fitPt(PICKY)/1000.); //InTeV
+	  kappa_mu2_refit = 1./(mu2->fitPt(PICKY)/1000.); //InTeV
+	}/// NEW
 	if (assignment == "TUNEP"){
-	  kappa_mu1_refit = mu1->charge/(mu1->pt_tuneP/1000.); //InTeV mu1->pt assignment is not signed in CIEMAT tuples.
-	  kappa_mu2_refit = mu2->charge/(mu2->pt_tuneP/1000.); //InTeV
+	  kappa_mu1_refit = mu1->fitCharge(TUNEP)/(mu1->fitPt(TUNEP)/1000.); //InTeV mu1->fitPt(TUNEP) assignment is not signed in CIEMAT tuples.
+	  kappa_mu2_refit = mu2->fitCharge(TUNEP)/(mu2->fitPt(TUNEP)/1000.); //InTeV
 	}
 	if (!cms.isDataFile()){
 	  //Apply bias in MC refit assignment
@@ -576,21 +576,21 @@ int main(int argc, char** argv){
 	cms.FillPlot1D("hKMuonLowMass_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 
 	// Inclusive Results
-	if (fabs(mu1->eta) < 1.2 ){
+	if (fabs(mu1->fitEta(TUNEP)) < 1.2 ){
         cms.FillPlot1D("hKMuonLowMassBarrel_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  cms.FillPlot1D("hKMuonBarrel_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	}else{
 	  cms.FillPlot1D("hKMuonEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (mu1->eta > 1.2 ) cms.FillPlot1D("hKMuonPosEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (mu1->eta < -1.2 ) cms.FillPlot1D("hKMuonNegEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (mu1->fitEta(TUNEP) > 1.2 ) cms.FillPlot1D("hKMuonPosEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (mu1->fitEta(TUNEP) < -1.2 ) cms.FillPlot1D("hKMuonNegEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	}
-	if (fabs(mu2->eta) < 1.2 ){
+	if (fabs(mu2->fitEta(TUNEP)) < 1.2 ){
       cms.FillPlot1D("hKMuonLowMassBarrel_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	  cms.FillPlot1D("hKMuonBarrel_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	}else{
 	  cms.FillPlot1D("hKMuonEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (mu2->eta > 1.2 ) cms.FillPlot1D("hKMuonPosEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (mu2->eta < -1.2 ) cms.FillPlot1D("hKMuonNegEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);	      
+	  if (mu2->fitEta(TUNEP) > 1.2 ) cms.FillPlot1D("hKMuonPosEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (mu2->fitEta(TUNEP) < -1.2 ) cms.FillPlot1D("hKMuonNegEndcap_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	}
 	
 	
@@ -598,54 +598,54 @@ int main(int argc, char** argv){
 	if (ScaleMap == true){
 	  //First Muon
 	  // -2.4,-2.1 
-	  if (( mu1->eta > -2.4 && mu1->eta <= -2.1) && (mu1->phi > -M_PI && mu1->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > -2.4 && mu1->eta <= -2.1) && (mu1->phi > -M_PI*60/180. && mu1->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > -2.4 && mu1->eta <= -2.1) && (mu1->phi > M_PI*60/180. && mu1->phi <= M_PI)) cms.FillPlot1D("hKMuon_0_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -2.4 && mu1->fitEta(TUNEP) <= -2.1) && (mu1->fitPhi(TUNEP) > -M_PI && mu1->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -2.4 && mu1->fitEta(TUNEP) <= -2.1) && (mu1->fitPhi(TUNEP) > -M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -2.4 && mu1->fitEta(TUNEP) <= -2.1) && (mu1->fitPhi(TUNEP) > M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_0_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  // -2.1, -1.2
-	  if (( mu1->eta > -2.1 && mu1->eta <= -1.2) && (mu1->phi > -M_PI && mu1->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > -2.1 && mu1->eta <= -1.2) && (mu1->phi > -M_PI*60/180. && mu1->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > -2.1 && mu1->eta <= -1.2) && (mu1->phi > M_PI*60/180. && mu1->phi <= M_PI)) cms.FillPlot1D("hKMuon_1_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -2.1 && mu1->fitEta(TUNEP) <= -1.2) && (mu1->fitPhi(TUNEP) > -M_PI && mu1->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -2.1 && mu1->fitEta(TUNEP) <= -1.2) && (mu1->fitPhi(TUNEP) > -M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -2.1 && mu1->fitEta(TUNEP) <= -1.2) && (mu1->fitPhi(TUNEP) > M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_1_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  // -1.2, 0
-	  if (( mu1->eta > -1.2 && mu1->eta <= 0.) && (mu1->phi > -M_PI && mu1->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > -1.2 && mu1->eta <= 0.) && (mu1->phi > -M_PI*60/180. && mu1->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > -1.2 && mu1->eta <= 0.) && (mu1->phi > M_PI*60/180. && mu1->phi <= M_PI)) cms.FillPlot1D("hKMuon_2_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -1.2 && mu1->fitEta(TUNEP) <= 0.) && (mu1->fitPhi(TUNEP) > -M_PI && mu1->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -1.2 && mu1->fitEta(TUNEP) <= 0.) && (mu1->fitPhi(TUNEP) > -M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > -1.2 && mu1->fitEta(TUNEP) <= 0.) && (mu1->fitPhi(TUNEP) > M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_2_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  // 0, 1.2
-	  if (( mu1->eta > 0. && mu1->eta <= 1.2) && (mu1->phi > -M_PI && mu1->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > 0. && mu1->eta <= 1.2) && (mu1->phi > -M_PI*60/180. && mu1->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > 0. && mu1->eta <= 1.2) && (mu1->phi > M_PI*60/180. && mu1->phi <= M_PI)) cms.FillPlot1D("hKMuon_3_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 0. && mu1->fitEta(TUNEP) <= 1.2) && (mu1->fitPhi(TUNEP) > -M_PI && mu1->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 0. && mu1->fitEta(TUNEP) <= 1.2) && (mu1->fitPhi(TUNEP) > -M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 0. && mu1->fitEta(TUNEP) <= 1.2) && (mu1->fitPhi(TUNEP) > M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_3_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  // 1.2, 2.1
-	  if (( mu1->eta > 1.2 && mu1->eta <= 2.1) && (mu1->phi > -M_PI && mu1->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > 1.2 && mu1->eta <= 2.1) && (mu1->phi > -M_PI*60/180. && mu1->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > 1.2 && mu1->eta <= 2.1) && (mu1->phi > M_PI*60/180. && mu1->phi <= M_PI)) cms.FillPlot1D("hKMuon_4_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 1.2 && mu1->fitEta(TUNEP) <= 2.1) && (mu1->fitPhi(TUNEP) > -M_PI && mu1->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 1.2 && mu1->fitEta(TUNEP) <= 2.1) && (mu1->fitPhi(TUNEP) > -M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 1.2 && mu1->fitEta(TUNEP) <= 2.1) && (mu1->fitPhi(TUNEP) > M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_4_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  // 2.1, 2.4
-	  if (( mu1->eta > 2.1 && mu1->eta <= 2.4) && (mu1->phi > -M_PI && mu1->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > 2.1 && mu1->eta <= 2.4) && (mu1->phi > -M_PI*60/180. && mu1->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
-	  if (( mu1->eta > 2.1 && mu1->eta <= 2.4) && (mu1->phi > M_PI*60/180. && mu1->phi <= M_PI)) cms.FillPlot1D("hKMuon_5_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 2.1 && mu1->fitEta(TUNEP) <= 2.4) && (mu1->fitPhi(TUNEP) > -M_PI && mu1->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_1_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 2.1 && mu1->fitEta(TUNEP) <= 2.4) && (mu1->fitPhi(TUNEP) > -M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_2_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
+	  if (( mu1->fitEta(TUNEP) > 2.1 && mu1->fitEta(TUNEP) <= 2.4) && (mu1->fitPhi(TUNEP) > M_PI*60/180. && mu1->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_5_3_"+TString(Form("%d",nbin)), iSample, kappa_mu1_refit, weight);
 	  //Second Muon
 	  // -2.4,-2.1 
-	  if (( mu2->eta > -2.4 && mu2->eta <= -2.1) && (mu2->phi > -M_PI && mu2->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > -2.4 && mu2->eta <= -2.1) && (mu2->phi > -M_PI*60/180. && mu2->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > -2.4 && mu2->eta <= -2.1) && (mu2->phi > M_PI*60/180. && mu2->phi <= M_PI)) cms.FillPlot1D("hKMuon_0_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -2.4 && mu2->fitEta(TUNEP) <= -2.1) && (mu2->fitPhi(TUNEP) > -M_PI && mu2->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -2.4 && mu2->fitEta(TUNEP) <= -2.1) && (mu2->fitPhi(TUNEP) > -M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_0_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -2.4 && mu2->fitEta(TUNEP) <= -2.1) && (mu2->fitPhi(TUNEP) > M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_0_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	  // -2.1, -1.2
-	  if (( mu2->eta > -2.1 && mu2->eta <= -1.2) && (mu2->phi > -M_PI && mu2->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > -2.1 && mu2->eta <= -1.2) && (mu2->phi > -M_PI*60/180. && mu2->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > -2.1 && mu2->eta <= -1.2) && (mu2->phi > M_PI*60/180. && mu2->phi <= M_PI)) cms.FillPlot1D("hKMuon_1_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -2.1 && mu2->fitEta(TUNEP) <= -1.2) && (mu2->fitPhi(TUNEP) > -M_PI && mu2->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -2.1 && mu2->fitEta(TUNEP) <= -1.2) && (mu2->fitPhi(TUNEP) > -M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_1_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -2.1 && mu2->fitEta(TUNEP) <= -1.2) && (mu2->fitPhi(TUNEP) > M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_1_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	  // -1.2, 0
-	  if (( mu2->eta > -1.2 && mu2->eta <= 0.) && (mu2->phi > -M_PI && mu2->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > -1.2 && mu2->eta <= 0.) && (mu2->phi > -M_PI*60/180. && mu2->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > -1.2 && mu2->eta <= 0.) && (mu2->phi > M_PI*60/180. && mu2->phi <= M_PI)) cms.FillPlot1D("hKMuon_2_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -1.2 && mu2->fitEta(TUNEP) <= 0.) && (mu2->fitPhi(TUNEP) > -M_PI && mu2->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -1.2 && mu2->fitEta(TUNEP) <= 0.) && (mu2->fitPhi(TUNEP) > -M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_2_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > -1.2 && mu2->fitEta(TUNEP) <= 0.) && (mu2->fitPhi(TUNEP) > M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_2_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	  // 0, 1.2
-	  if (( mu2->eta > 0. && mu2->eta <= 1.2) && (mu2->phi > -M_PI && mu2->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > 0. && mu2->eta <= 1.2) && (mu2->phi > -M_PI*60/180. && mu2->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > 0. && mu2->eta <= 1.2) && (mu2->phi > M_PI*60/180. && mu2->phi <= M_PI)) cms.FillPlot1D("hKMuon_3_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 0. && mu2->fitEta(TUNEP) <= 1.2) && (mu2->fitPhi(TUNEP) > -M_PI && mu2->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 0. && mu2->fitEta(TUNEP) <= 1.2) && (mu2->fitPhi(TUNEP) > -M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_3_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 0. && mu2->fitEta(TUNEP) <= 1.2) && (mu2->fitPhi(TUNEP) > M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_3_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	  // 1.2, 2.1
-	  if (( mu2->eta > 1.2 && mu2->eta <= 2.1) && (mu2->phi > -M_PI && mu2->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > 1.2 && mu2->eta <= 2.1) && (mu2->phi > -M_PI*60/180. && mu2->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > 1.2 && mu2->eta <= 2.1) && (mu2->phi > M_PI*60/180. && mu2->phi <= M_PI)) cms.FillPlot1D("hKMuon_4_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 1.2 && mu2->fitEta(TUNEP) <= 2.1) && (mu2->fitPhi(TUNEP) > -M_PI && mu2->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 1.2 && mu2->fitEta(TUNEP) <= 2.1) && (mu2->fitPhi(TUNEP) > -M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_4_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 1.2 && mu2->fitEta(TUNEP) <= 2.1) && (mu2->fitPhi(TUNEP) > M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_4_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	  // 2.1, 2.4
-	  if (( mu2->eta > 2.1 && mu2->eta <= 2.4) && (mu2->phi > -M_PI && mu2->phi <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > 2.1 && mu2->eta <= 2.4) && (mu2->phi > -M_PI*60/180. && mu2->phi <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
-	  if (( mu2->eta > 2.1 && mu2->eta <= 2.4) && (mu2->phi > M_PI*60/180. && mu2->phi <= M_PI)) cms.FillPlot1D("hKMuon_5_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);	  
+	  if (( mu2->fitEta(TUNEP) > 2.1 && mu2->fitEta(TUNEP) <= 2.4) && (mu2->fitPhi(TUNEP) > -M_PI && mu2->fitPhi(TUNEP) <= -M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_1_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 2.1 && mu2->fitEta(TUNEP) <= 2.4) && (mu2->fitPhi(TUNEP) > -M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI*60/180.)) cms.FillPlot1D("hKMuon_5_2_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
+	  if (( mu2->fitEta(TUNEP) > 2.1 && mu2->fitEta(TUNEP) <= 2.4) && (mu2->fitPhi(TUNEP) > M_PI*60/180. && mu2->fitPhi(TUNEP) <= M_PI)) cms.FillPlot1D("hKMuon_5_3_"+TString(Form("%d",nbin)), iSample, kappa_mu2_refit, weight);
 	}
       }     
     }
@@ -787,10 +787,11 @@ std::vector<muon_pog::Muon*> WmunuAnalysis::GoodZprimeMuons() {
   unsigned nmuons25 = 0;
   if (verbose == true )printf("Number of Muons %i \n", nMuons());
 
-  for (unsigned int im=0; im<nMuons(); ++im) {
-//      printf("inside good muons");
-
-    if (muon(im).pt_tuneP>25.) nmuons25++;
+ for (unsigned int im=0; im<nMuons(); ++im) {
+      printf("inside good muons, index %i \n", im);
+      printf("inside good muons, muon(im).fits.size %i \n", muon(im).fits.size());
+    if (muon(im).fitPt(TUNEP)>25.) nmuons25++;
+     printf("Number of Muons above 25 %i \n", nmuons25++);
 
   }
   if (nmuons25<2) return selectedMuons;
@@ -798,32 +799,32 @@ std::vector<muon_pog::Muon*> WmunuAnalysis::GoodZprimeMuons() {
 
   for (unsigned int im1=0; im1<nMuons(); ++im1) {
     Muon* mu1 = pmuon(im1);
-    if (verbose == true ) printf("Muon1 pt %f \n", mu1->pt_tuneP);
-    if (fabs(mu1->pt_tuneP)<53.) continue;
+    if (verbose == true ) printf("Muon1 pt %f \n", mu1->fitPt(TUNEP));
+    if (fabs(mu1->fitPt(TUNEP))<53.) continue;
     if (!mu1->isHighPt) continue; // high-pt Id
-    if (fabs(mu1->eta)>2.4) continue; // eta cut
-    if (mu1->bestMuPtErr>0.3*mu1->pt_tuneP) continue; // reasonable momentum uncertainty
-    if (mu1->isTracker>0.1*mu1->pt) continue; // track-isolated
+    if (fabs(mu1->fitEta(TUNEP))>2.4) continue; // eta cut
+    if (mu1->fitPtErr(TUNEP)>0.3*mu1->fitPt(TUNEP)) continue; // reasonable momentum uncertainty
+    if (mu1->trackerIso>0.1*mu1->fitPt(TUNEP)) continue; // track-isolated
     if (fabs(mu1->dxy)>0.02) continue; // d0 cut
 
     for (unsigned int im2=im1+1; im2<nMuons(); ++im2) {
       Muon* mu2 = pmuon(im2);
-      if (verbose == true ) printf("Muon2 pt %f \n", mu2->pt_tuneP);
-      if (mu1->charge*mu2->charge == 1) continue;
-      if (fabs(mu2->pt_tuneP)<25.) continue;
-      //if (fabs(mu2->pt)<53.) continue;
+      if (verbose == true ) printf("Muon2 pt %f \n", mu2->fitPt(TUNEP));
+      if (mu1->fitCharge(TUNEP)*mu2->fitCharge(TUNEP) == 1) continue;
+      if (fabs(mu2->fitPt(TUNEP))<25.) continue;
+      //if (fabs(mu2->fitPt(TUNEP))<53.) continue;
       if (!mu2->isHighPt) continue; // high-pt Id
-      if (fabs(mu2->eta)>2.4) continue; // eta cut
-      if (mu2->bestMuPtErr>0.3*mu2->pt_tuneP) continue; // reasonable momentum uncertainty
-      if (mu2->isTracker>0.1*mu2->pt) continue; // track-isolated
+      if (fabs(mu2->fitEta(TUNEP))>2.4) continue; // eta cut
+      if (mu2->fitPtErr(TUNEP)>0.3*mu2->fitPt(TUNEP)) continue; // reasonable momentum uncertainty
+      if (mu2->trackerIso>0.1*mu2->fitPt(TUNEP)) continue; // track-isolated
       if (fabs(mu2->dxy)>0.02) continue; // d0 cut
 
-      double zMass2 = 2*mu1->pt_tuneP*mu2->pt_tuneP*(cosh(mu1->eta-mu2->eta)-cos(deltaPhi(mu1->phi, mu2->phi)));
+      double zMass2 = 2*mu1->fitPt(TUNEP)*mu2->fitPt(TUNEP)*(cosh(mu1->fitEta(TUNEP)-mu2->fitEta(TUNEP))-cos(deltaPhi(mu1->fitPhi(TUNEP), mu2->fitPhi(TUNEP))));
       zMass2 = sqrt(zMass2);
       if (verbose == true )  printf("Invariant mass %f \n", zMass2);
       if (zMass2<50.) continue;
 
-      if (mu1->pt_tuneP > mu2->pt_tuneP){
+      if (mu1->fitPt(TUNEP) > mu2->fitPt(TUNEP)){
         selectedMuons.push_back(mu1);
         selectedMuons.push_back(mu2);
       }else{
@@ -842,27 +843,27 @@ void WmunuAnalysis::Apply_lepton_SF(Muon* mu, double& weight, bool notrig){
 
 //  //Here I set the SF for trigger                                                                                                                                                                                              
 //  double SF_trigger[etaBINS];
-//  if (fabs(mu->pt) < 60){
+//  if (fabs(mu->fitPt(TUNEP)) < 60){
 //    SF_trigger[0] = 0.911513; SF_trigger[1] = 0.882274; SF_trigger[2] = 0.839448; SF_trigger[3] = 0.723469;
-//  }else if(fabs(mu->pt) < 140){
+//  }else if(fabs(mu->fitPt(TUNEP)) < 140){
 //    SF_trigger[0] = 0.914351; SF_trigger[1] = 0.883462; SF_trigger[2] = 0.838485; SF_trigger[3] = 0.7526;
 //  }else{
 //    SF_trigger[0] = 0.91233; SF_trigger[1] = 0.856823; SF_trigger[2] = 0.801867; SF_trigger[3] = 0.708108;
 //  }
   //Here I set the SF for the HighPt muonID
   double SF_id[etaBINS];
-  if (fabs(mu->pt) < 60){
+  if (fabs(mu->fitPt(TUNEP)) < 60){
     SF_id[0] = 0.97894; SF_id[1] = 0.97200; SF_id[2] = 0.99446; SF_id[3] = 0.97859;
-  }else if(fabs(mu->pt) < 120){
+  }else if(fabs(mu->fitPt(TUNEP)) < 120){
     SF_id[0] = 0.97914; SF_id[1] = 0.97798; SF_id[2] = 0.996493; SF_id[3] = 0.97932;
   }else{
     SF_id[0] = 0.97914; SF_id[1] = 0.97798; SF_id[2] = 0.996493; SF_id[3] = 0.97932;
   }
   //Here I set the SF for the Isolation                                                                                                                                                                                        
   double SF_iso[etaBINS];
-  if (fabs(mu->pt) < 60){
+  if (fabs(mu->fitPt(TUNEP)) < 60){
     SF_iso[0] = 0.999325; SF_iso[1] = 0.99888; SF_iso[2] = 0.998823; SF_iso[3] = 0.998515;
-  }else if(fabs(mu->pt) < 120){
+  }else if(fabs(mu->fitPt(TUNEP)) < 120){
     SF_iso[0] = 0.999048; SF_iso[1] = 0.999334; SF_iso[2] = 0.999504; SF_iso[3] = 0.999914;
   }else{
     SF_iso[0] = 0.999048; SF_iso[1] = 0.999334; SF_iso[2] = 0.999504; SF_iso[3] = 0.999914;
@@ -874,13 +875,13 @@ void WmunuAnalysis::Apply_lepton_SF(Muon* mu, double& weight, bool notrig){
 
   unsigned int ibin = etaBINS;
   for (unsigned int kbin=0; kbin<=etaBINS; ++kbin) {
-    if (fabs(mu->eta)<etabin[kbin+1]) {
+    if (fabs(mu->fitEta(TUNEP))<etabin[kbin+1]) {
       ibin = kbin;
       break;
     }
   }
 //  double sf = SF_trigger[ibin]*SF_id[ibin]*SF_iso[ibin];
-//  if (notrig == true && fabs(mu->pt) > 51.5) sf = SF_id[ibin]*SF_iso[ibin];
+//  if (notrig == true && fabs(mu->fitPt(TUNEP)) > 51.5) sf = SF_id[ibin]*SF_iso[ibin];
   double sf = SF_id[ibin]*SF_iso[ibin];
   weight = weight*sf;
 					
@@ -890,9 +891,9 @@ void WmunuAnalysis::Muon_triggerSF(Muon* mu, double& weight){
 
     //Here I set the SF for trigger
     double SF_trigger[etaBINS];
-    if (fabs(mu->pt) < 60){
+    if (fabs(mu->fitPt(TUNEP)) < 60){
         SF_trigger[0] = 0.911513; SF_trigger[1] = 0.882274; SF_trigger[2] = 0.839448; SF_trigger[3] = 0.723469;
-    }else if(fabs(mu->pt) < 140){
+    }else if(fabs(mu->fitPt(TUNEP)) < 140){
         SF_trigger[0] = 0.914351; SF_trigger[1] = 0.883462; SF_trigger[2] = 0.838485; SF_trigger[3] = 0.7526;
     }else{
         SF_trigger[0] = 0.91233; SF_trigger[1] = 0.856823; SF_trigger[2] = 0.801867; SF_trigger[3] = 0.708108;
@@ -904,7 +905,7 @@ void WmunuAnalysis::Muon_triggerSF(Muon* mu, double& weight){
     
     unsigned int ibin = etaBINS;
     for (unsigned int kbin=0; kbin<=etaBINS; ++kbin) {
-        if (fabs(mu->eta)<etabin[kbin+1]) {
+        if (fabs(mu->fitEta(TUNEP))<etabin[kbin+1]) {
             ibin = kbin;
             break;
         }

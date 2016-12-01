@@ -561,7 +561,7 @@ muon_pog::METs& CMSAnalysis::met(){return *pmet();};
 
 // MUONS
 unsigned int CMSAnalysis::nMuons() {
-      if (_pevent==0) _bEvent->GetEntry(_iEvent);
+    if (_pevent==0) _bEvent->GetEntry(_iEvent);
     return _pevent->muons.size();
 //      return 1; ///NEW
 }

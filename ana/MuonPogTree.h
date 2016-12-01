@@ -68,17 +68,26 @@ namespace muon_pog {
     
     Float_t dx;  // 999999 if not matched with a segment (I think) 
     Float_t dy;  // 999999 if not matched with a segment (I think)
+
+    Float_t dDxDz;  // 999999 if not matched with a segment (I think) 
+    Float_t dDyDz;  // 999999 if not matched with a segment (I think)
     
     Float_t errxTk; 
     Float_t erryTk; 
+
+    Float_t errDxDzTk; 
+    Float_t errDyDzTk; 
     
     Float_t errxSeg;  // 999999 if not matched with a segment (I think)
     Float_t errySeg;  // 999999 if not matched with a segment (I think) 
+
+    Float_t errDxDzSeg;  // 999999 if not matched with a segment (I think)
+    Float_t errDyDzSeg;  // 999999 if not matched with a segment (I think) 
     
     ChambMatch(){};
     virtual ~ChambMatch(){};
     
-    ClassDef(ChambMatch,1)
+    ClassDef(ChambMatch,2)
   };
 
   class HitInfo {
@@ -99,6 +108,34 @@ namespace muon_pog {
     ClassDef(HitInfo,1)
   };
 
+  enum MuonFitType { DEFAULT=0, INNER, STA, GLB, TUNEP, PICKY, DYT, TPFMS};
+
+  class MuonFit {
+  public:
+    Float_t pt;  // pt [GeV]   
+    Float_t eta; // eta
+    Float_t phi; // phi
+
+    Int_t   charge;    // charge
+
+    Float_t ptErr; // fit sigma pT 
+
+    MuonFit(){};
+    MuonFit(Float_t in_pt,
+	    Float_t in_eta,
+	    Float_t in_phi,
+	    Int_t   in_charge,
+	    Float_t in_ptErr
+	    ) : pt(in_pt) ,
+                eta(in_eta) ,
+                phi(in_phi) ,
+                charge(in_charge) ,
+                ptErr(in_ptErr) {};
+    virtual ~MuonFit(){};
+    
+    ClassDef(MuonFit,1)
+  };
+
   class Muon {
   public:
 
@@ -107,30 +144,6 @@ namespace muon_pog {
     Float_t phi; // phi
 
     Int_t   charge;    // charge
-
-    Float_t pt_tuneP;  // pt [GeV]
-    Float_t eta_tuneP; // eta
-    Float_t phi_tuneP; // phi
-
-    Int_t   charge_tuneP;    // charge
-
-    Float_t pt_global;  // pt [GeV]
-    Float_t eta_global; // eta
-    Float_t phi_global; // phi
-
-    Int_t   charge_global;    // charge
-
-    Float_t pt_tracker;  // pt [GeV]
-    Float_t eta_tracker; // eta
-    Float_t phi_tracker; // phi
-
-    Int_t   charge_tracker;    // charge
-
-    Float_t pt_standalone;  // pt [GeV]
-    Float_t eta_standalone; // eta
-    Float_t phi_standalone; // phi
-
-    Int_t   charge_standalone;    // charge
 
     Int_t   isGlobal;
     Int_t   isTracker;
@@ -211,11 +224,37 @@ namespace muon_pog {
 
     std::vector<HitInfo> hits;
     std::vector<ChambMatch> matches;
+    std::vector<MuonFit> fits;
 
     Muon(){};
     virtual ~Muon(){};
 
-    ClassDef(Muon,3)
+    inline Float_t fitPt( const muon_pog::MuonFitType type ) 
+    {
+      return fits.at(type).pt;
+    };
+
+    inline Float_t fitEta( const muon_pog::MuonFitType type ) 
+    {
+      return fits.at(type).eta;
+    };
+
+    inline Float_t fitPhi( const muon_pog::MuonFitType type ) 
+    {
+      return fits.at(type).phi;
+    };
+
+    inline Int_t fitCharge( const muon_pog::MuonFitType type ) 
+    {
+      return fits.at(type).charge;
+    };
+
+    inline Float_t fitPtErr( const muon_pog::MuonFitType type ) 
+    {
+      return fits.at(type).ptErr;
+    };
+
+    ClassDef(Muon,4)
   };
 
   class HLTObject {
@@ -281,14 +320,15 @@ namespace muon_pog {
   class EventId {
   public:
 
-    Int_t runNumber;             // run number
-    Int_t luminosityBlockNumber; // luminosity block number
-    Int_t eventNumber;           // event number
+    Int_t runNumber;              // run number
+    Int_t luminosityBlockNumber;  // luminosity block number
+    Int_t eventNumber;            // event number
+    Int_t nMuons;                 // event number of good muons
 
     EventId(){};
     virtual ~EventId(){};
 
-    ClassDef(EventId,1)
+    ClassDef(EventId,2)
   };
 
   class Event {
@@ -316,7 +356,7 @@ namespace muon_pog {
     Event(){};
     virtual ~Event(){};
 
-    ClassDef(Event,5)
+    ClassDef(Event,6)
   };
 
 }
